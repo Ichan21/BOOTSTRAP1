@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Dashboard</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS for dashboard layout -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+
+        /* Header styling */
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .left-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .header .right-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .header .search-bar-container {
+            margin-right: 20px;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            height: calc(100vh - 70px); /* Adjust height to account for header */
+            width: 250px;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+            z-index: 1000;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        .sidebar.hide {
+            transform: translateX(-250px);
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-align: left;
+            text-decoration: none;
+            font-size: 18px;
+            color: #f8f9fa;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+        }
+
+        .sidebar-heading {
+            color: #adb5bd;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 15px;
+        }
+
+        .sidebar .collapse a {
+            padding-left: 30px;
+            font-size: 16px;
+        }
+
+        /* Main content styling */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            margin-top: 70px; /* Adjust margin for fixed header */
+            scroll-behavior: smooth; /* Smooth scrolling */
+        }
+
+        .content.expand {
+            margin-left: 0;
+        }
+
+        /* Sidebar toggle button */
+        .toggle-sidebar {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px;
+                transform: translateX(-250px); /* Hide sidebar by default */
+            }
+
+            .sidebar.show {
+                transform: translateX(0); /* Show sidebar when active */
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+
+        /* Dropdown menu in header */
+        .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header bg-danger">
+        <!-- Sidebar Toggle and Brand Name on the left -->
+        <div class="left-section">
+            <i class="fas fa-bars toggle-sidebar me-3" id="sidebarToggle"></i>
+            <h4>I'm Ichan!</h4>
+        </div>
+
+        <!-- Search bar and User icon on the right -->
+        <div class="right-section">
+            <div class="search-bar-container">
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search for..." aria-label="Search">
+                    <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+
+            <!-- User icon and dropdown -->
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown">
+                    <i class="fas fa-user-circle fa-2x"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Activity Log</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="../index.html">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+   <!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-heading">Core</div>
+    <a href="#dashboardSection"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+
+    <div class="sidebar-heading">INTERFACE</div>
+    <a href="#layoutSection" data-bs-toggle="collapse" data-bs-target="#layoutCollapse"><i class="fas fa-columns"></i> Layout</a>
+    <div id="layoutCollapse" class="collapse">
+        <a href="#staticNavSection" class="collapse-item ms-3">Static Navigation</a>
+        <a href="#lightSidenavSection" class="collapse-item ms-3">Light Sidenav</a>
+    </div>
+
+    <a href="#pageSection" data-bs-toggle="collapse" data-bs-target="#pageCollapse"><i class="fas fa-file-alt"></i> Page</a>
+    <div id="pageCollapse" class="collapse">
+        <!-- Authentication Section Inside Page -->
+        <a href="#authSection" data-bs-toggle="collapse" data-bs-target="#authCollapse" class="ms-3">Authentication</a>
+        <div id="authCollapse" class="collapse">
+            <a href="#loginSection" class="collapse-item ms-4">Login</a>
+            <a href="#registerSection" class="collapse-item ms-4">Register</a>
+        </div>
+
+        <!-- Error Section Inside Page -->
+        <a href="#errorSection" data-bs-toggle="collapse" data-bs-target="#errorCollapse" class="ms-3">Error</a>
+        <div id="errorCollapse" class="collapse">
+            <a href="#404Section" class="collapse-item ms-4">404</a>
+            <a href="#500Section" class="collapse-item ms-4">500</a>
+        </div>
+    </div>
+
+    <div class="sidebar-heading">Addons</div>
+    <a href="#chartsSection"><i class="fas fa-chart-area"></i> Charts</a>
+    <a href="#tablesSection"><i class="fas fa-table"></i> Tables</a>
+</div>
+
+
+
+    <!-- Main content -->
+    <div class="content" id="content">
+        <!-- Dashboard Content -->
+        <div class="container-fluid">
+            <h2 id="dashboardSection">Dashboard</h2>
+            <div class="row">
+                <!-- Colored Cards -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Primary Card</h5>
+                            <a href="#" class="btn btn-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Warning Card</h5>
+                            <a href="#" class="btn btn-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Success Card</h5>
+                            <a href="#" class="btn btn-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card text-white bg-danger mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Danger Card</h5>
+                            <a href="#" class="btn btn-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h3 id="chartsSection">Area Chart Example</h3>
+                    <canvas id="areaChart"></canvas>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <h3>Bar Chart Example</h3>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Font Awesome JavaScript for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Example chart configurations and toggle sidebar script -->
+    <script>
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show'); // Toggle sidebar visibility
+        });
+
+        // Scroll to section when sidebar link is clicked
+        document.querySelectorAll('.sidebar a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                document.getElementById(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Area Chart Example
+        const areaCtx = document.getElementById('areaChart').getContext('2d');
+        const areaChart = new Chart(areaCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mar 1', 'Mar 3', 'Mar 5', 'Mar 7', 'Mar 9', 'Mar 11', 'Mar 13'],
+                datasets: [{
+                    label: 'Sessions',
+                    data: [12000, 15000, 22000, 17000, 18000, 23000, 29000],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Bar Chart Example
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [12000, 19000, 3000, 5000, 2000, 3000],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
